@@ -1,103 +1,24 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import customaxios from '../customaxios';
+import React, { useState, useEffect } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  Dimensions, 
+  ScrollView,
+  ActivityIndicator ,
+  TouchableOpacity
+} from 'react-native';
+import { LineChart, PieChart } from 'react-native-chart-kit';
+import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import customaxios from '../customaxios';
 
-const getMaxValue = (data) => {
-  return Math.max(
-    ...data.map(day => 
-      Math.max(
-        day.transactions
-          .filter(t => t.type === 'income')
-          .reduce((sum, t) => sum + t.amount, 0),
-        day.transactions
-          .filter(t => t.type === 'expense')
-          .reduce((sum, t) => sum + t.amount, 0)
-      )
-    )
-  );
-};
-
-const SummaryContainer = ({ transactionData, formatCurrency }) => {
-  const maxValue = getMaxValue(transactionData.weeklyData);
-  const BAR_HEIGHT = 150;
-
-  return (
-    <View style={styles.summaryContainer}>
-      <View style={styles.balanceRow}>
-        <View>
-          
-        </View>
-        <View>
-        
-        </View>
-      </View>
-
-      <View style={styles.barChart}>
-        {transactionData.weeklyData.map((day, index) => {
-          const income = day.transactions
-            .filter(t => t.type === 'income')
-            .reduce((sum, t) => sum + t.amount, 0);
-          const expense = day.transactions
-            .filter(t => t.type === 'expense')
-            .reduce((sum, t) => sum + t.amount, 0);
-
-          const incomeHeight = (income / maxValue) * BAR_HEIGHT;
-          const expenseHeight = (expense / maxValue) * BAR_HEIGHT;
-
-          return (
-            <View key={index} style={styles.barColumn}>
-              <View style={styles.bars}>
-                <View style={styles.barValues}>
-                  {income > 0 && (
-                    <Text style={styles.barAmount}>
-                      {formatCurrency(income)}
-                    </Text>
-                  )}
-                  {expense > 0 && (
-                    <Text style={styles.barAmount}>
-                      {formatCurrency(expense)}
-                    </Text>
-                  )}
-                </View>
-                <View style={styles.barContainer}>
-                  {income > 0 && (
-                    <View 
-                      style={[
-                        styles.bar, 
-                        styles.incomeBar, 
-                        { height: Math.max(incomeHeight, 20) }
-                      ]} 
-                    />
-                  )}
-                  {expense > 0 && (
-                    <View 
-                      style={[
-                        styles.bar, 
-                        styles.expenseBar, 
-                        { height: Math.max(expenseHeight, 20) }
-                      ]} 
-                    />
-                  )}
-                </View>
-                <Text style={styles.dayLabel}>{day.day}</Text>
-              </View>
-            </View>
-          );
-        })}
-      </View>
-     
-    </View>
-  );
-};
-
-const Report = ({navigation}) => {
+const Report = ({ navigation }) => {
   const [transactionData, setTransactionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const screenWidth = Dimensions.get('window').width;
-  const data = useSelector((state) => state.user.user); 
+  const data = useSelector((state) => state.user.user);
+
   const fetchTransactions = async () => {
     try {
       setLoading(true);
@@ -116,12 +37,14 @@ const Report = ({navigation}) => {
     }, [])
   );
 
+  // Currency Formatter
   const formatCurrency = (amount) => 
     new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
 
+  // Loading State
   if (loading || !transactionData) {
     return (
       <View style={styles.loadingContainer}>
@@ -130,6 +53,7 @@ const Report = ({navigation}) => {
     );
   }
 
+  // No Data State
   if (!transactionData || Object.keys(transactionData).length === 0 || !transactionData.balanceTrend?.length) {
     return (
       <View style={styles.noDataContainer}>
@@ -138,106 +62,104 @@ const Report = ({navigation}) => {
     );
   }
 
+  // Balance Trend Line Chart Configuration
   const balanceTrendData = {
-    labels: transactionData.balanceTrend.map(d => ""),
+    labels: transactionData.balanceTrend.map(() => ""),
     datasets: [{
       data: transactionData.balanceTrend.map(d => d.balance),
       color: (opacity = 1) => `rgba(65, 105, 225, ${opacity})`,
     }]
   };
 
+  // Expense Pie Chart Configuration
+  const pieChartData = transactionData.categorySummary.expenses.map(category => ({
+    name: category.name,
+    amount: category.totalAmount,
+    color: category.color,
+    legendFontColor: "#fff",
+    legendFontSize: 12
+  }));
+
+  const chartConfig = {
+    backgroundColor: '#1e1e1e',
+    backgroundGradientFrom: '#1e1e1e',
+    backgroundGradientTo: '#1e1e1e',
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Report</Text>
-        <Text style={styles.subtitle}>This Week</Text>
-      </View>
-
-      <ScrollView>
-        <View style={styles.trendContainer}>
-          <Text style={styles.sectionTitle}>Balance Trend</Text>
-          <View style={styles.balanceRow}>
-            <View>
-              <Text style={styles.balanceLabel}>Total Income</Text>
-              <Text style={styles.balanceAmount}>
-                {formatCurrency(transactionData.summary.totalIncome)}
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.balanceLabel}>Total Expense</Text>
-              <Text style={styles.balanceAmount}>
-                {formatCurrency(transactionData.summary.totalExpense)}
-              </Text>
-            </View>
+    <ScrollView style={styles.container}>
+      {/* Balance Trend Section */}
+      <View style={styles.trendContainer}>
+        <Text style={styles.sectionTitle}>Balance Trend</Text>
+        
+        <View style={styles.balanceRow}>
+          <View>
+            <Text style={styles.balanceLabel}>Total Income</Text>
+            <Text style={styles.balanceAmount}>
+              {formatCurrency(transactionData.summary.totalIncome)}
+            </Text>
           </View>
-
-          <LineChart
-            data={balanceTrendData}
-            width={screenWidth - 40}
-            height={120}
-            chartConfig={{
-              backgroundColor: '#1e1e1e',
-              backgroundGradientFrom: '#1e1e1e',
-              backgroundGradientTo: '#1e1e1e',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16
-              }
-            }}
-            bezier
-            style={styles.lineChart}
-          />
+          <View>
+            <Text style={styles.balanceLabel}>Total Expense</Text>
+            <Text style={styles.balanceAmount}>
+              {formatCurrency(transactionData.summary.totalExpense)}
+            </Text>
+          </View>
         </View>
 
-        <SummaryContainer 
-          transactionData={transactionData}
-          formatCurrency={formatCurrency}
+        <LineChart
+          data={balanceTrendData}
+          width={screenWidth - 40}
+          height={220}
+          chartConfig={chartConfig}
+          bezier
+          style={styles.lineChart}
         />
-      </ScrollView>
-      <TouchableOpacity style={{
-        backgroundColor: '#9747ff',
-        borderRadius: 15,
-        padding: 15,
-        marginTop: 20,
-        margin : 10,
-        alignItems: 'center',
-      }} onPress={()=>navigation.navigate('Ai')}>
-                  <Text style={{ color: 'white',
-        fontWeight: '700',
-        fontSize: 18,}}>Get Ai Assistence</Text>
-          </TouchableOpacity>
-    </View>
+      </View>
+
+      {/* Expense Breakdown Section */}
+      <View style={styles.trendContainer}>
+        <Text style={styles.sectionTitle}>Expense Breakdown</Text>
+        <PieChart
+          data={pieChartData}
+          width={screenWidth - 40}
+          height={220}
+          chartConfig={chartConfig}
+          accessor={"amount"}
+          backgroundColor={"transparent"}
+          center={[10, 0]}
+          absolute
+        />
+      </View>
+
+      {/* AI Assistance Button */}
+      <View style={styles.aiButtonContainer}>
+        <TouchableOpacity 
+          style={styles.aiButton}
+          onPress={() => navigation.navigate('Ai')}
+        >
+          <Text style={styles.aiButtonText}>Get AI Assistance</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1e1e1e',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1e1e1e',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-  },
-  header: {
-    padding: 20,
-    paddingTop: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#fff',
-    marginTop: 10,
   },
   noDataContainer: {
     flex: 1,
@@ -276,55 +198,20 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 16,
   },
-  summaryContainer: {
-    padding: 20,
-    backgroundColor: '#1e1e1e',
+  aiButtonContainer: {
+    margin: 10,
   },
-  barChart: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 230, // BAR_HEIGHT + extra space for labels
-    marginTop: 20,
-  },
-  barColumn: {
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  bars: {
-    flex: 1,
-    justifyContent: 'flex-end',
+  aiButton: {
+    backgroundColor: '#9747ff',
+    borderRadius: 15,
+    padding: 15,
     alignItems: 'center',
   },
-  barContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  barValues: {
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  barAmount: {
-    color: '#888',
-    fontSize: 10,
-  },
-  bar: {
-    width: '60%',
-    borderRadius: 4,
-    marginVertical: 1,
-    minHeight: 20,
-  },
-  incomeBar: {
-    backgroundColor: '#4caf50',
-  },
-  expenseBar: {
-    backgroundColor: '#ff5252',
-  },
-  dayLabel: {
-    color: '#888',
-    fontSize: 12,
-    marginTop: 8,
-    textAlign: 'center',
-  },
+  aiButtonText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 18,
+  }
 });
 
 export default Report;

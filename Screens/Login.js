@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import img1 from '../assets/Business deal-cuate.png';
 import axios from 'axios';
@@ -31,6 +31,7 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       console.log(error);
+    Alert.alert('Error', error.message);
     }
   };
 
