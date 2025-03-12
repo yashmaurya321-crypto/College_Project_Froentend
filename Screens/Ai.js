@@ -52,7 +52,7 @@ const Ai = () => {
   const [refreshing, setRefreshing] = useState(false);
   const theme = CustomDarkTheme; // Use custom dark theme
   const userId = user?.user?._id;
-  
+  console.log(userId);
   const fetchFinancialAnalysis = async () => {
     try {
       setLoading(true);
@@ -63,6 +63,7 @@ const Ai = () => {
       const response = await customaxios.get(`/user/ai/${userId}`);
       
       if (response.data.success) {
+        console.log('Financial analysis:', response.data.data);
         setFinancialData(response.data.data);
       } else {
         setError('Failed to load financial analysis');
@@ -100,8 +101,9 @@ const Ai = () => {
     const incomeData = [];
     
     // Start with base values and add trends
-    let baseExpense = financialData.predictions[0]?.predictedExpenses || 2000;
-    let baseIncome = financialData.predictions[0]?.predictedIncome || 3000;
+    let baseExpense = financialData?.predictions?.[0]?.predictedExpenses || 2000;
+    let baseIncome = financialData?.predictions?.[0]?.predictedIncome || 3000;
+    
     let expenseTrend = 1.005; // Slight upward trend for expenses
     let incomeTrend = 1.003; // Slight upward trend for income
     
