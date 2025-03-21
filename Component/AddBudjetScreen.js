@@ -135,7 +135,7 @@ const getData = async () => {
   
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
+    
       <View style={styles.header}>
         <IconButton 
           icon="arrow-left" 
@@ -146,9 +146,9 @@ const getData = async () => {
         <Text style={styles.headerText}>Add Budget</Text>
       </View>
 
-      {/* Form Fields */}
+      
       <View style={styles.form}>
-        {/* Category Dropdown */}
+        
         <Menu
           visible={menuVisible}
           onDismiss={() => setMenuVisible(false)}
@@ -157,7 +157,7 @@ const getData = async () => {
               <TextInput
                 label="Select Category"
                 value={category.name || ''}
-                style={[styles.input, { color: 'white' }]}  // Ensure the text is white
+                style={[styles.input, { color: 'white' }]}  
                 mode="outlined"
                 editable={false}
                 right={<TextInput.Icon name="menu-down" color="white" />}
@@ -179,7 +179,7 @@ const getData = async () => {
           ))}
         </Menu>
 
-        {/* Limit Input */}
+       
         <TextInput
           label="Limit"
           value={limit}
@@ -188,12 +188,12 @@ const getData = async () => {
             setError('');
           }}
           keyboardType="numeric"
-          style={[styles.input, { color: 'white' }]}  // Ensure the text is white
+          style={[styles.input, { color: 'white' }]}  
           mode="outlined"
           placeholder="Enter amount"
         />
 
-        {/* Start Date Picker */}
+       
         <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
           <TextInput
             label="Start Date"
@@ -213,7 +213,7 @@ const getData = async () => {
           />
         )}
 
-        {/* End Date Picker */}
+       
         <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
           <TextInput
             label="End Date"
@@ -233,7 +233,7 @@ const getData = async () => {
           />
         )}
 
-        {/* Save Button */}
+     
         <Button
           mode="contained"
           onPress={handleSaveBudget}
@@ -245,7 +245,7 @@ const getData = async () => {
         </Button>
       </View>
 
-      {/* Error Snackbar */}
+     
       <Portal>
         <Snackbar
           visible={snackbarVisible}

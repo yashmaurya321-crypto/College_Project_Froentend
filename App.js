@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 
 function AppNavigator() {
   const [isLogin, setIsLogin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.user);
 
@@ -45,18 +45,18 @@ function AppNavigator() {
       console.error('Error fetching data:', error.message);
       setIsLogin(false);
     } finally {
-      setIsLoading(false); // Set loading to false after fetching is done
+      setIsLoading(false); 
     }
   };
 
   useEffect(() => {
-    fetchData(); // Call fetchData only once when the component mounts
-  }, []); // Empty dependency array ensures this runs once on mount
+    fetchData(); 
+  }, []); 
 
   if (isLoading) {
     return (
       <View style={styles.container}>
-        {/* You can show a loading spinner here */}
+        
         <Text>Loading...</Text>
       </View>
     );
@@ -65,7 +65,7 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={isLogin ? 'Home' : 'Login'}>
-      {/* <Stack.Navigator initialRouteName={'AddBudjet'}> */}
+      
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />

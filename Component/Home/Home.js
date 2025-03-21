@@ -50,11 +50,9 @@ const [data, setData] = React.useState([]);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        {/* Header */}
         <Text style={styles.greeting}>Good afternoon, {data?.user?.name ?? 'Guest'}.</Text>
 
 
-        {/* Net Worth Card */}
         <View style={styles.netWorthCard}>
           <View style={styles.netWorthHeader}>
             <Text style={styles.netWorthLabel}>Wallet</Text>
@@ -74,7 +72,6 @@ const [data, setData] = React.useState([]);
           </View>
         </View>
 
-        {/* Budgets Section */}
         <View style={styles.section}>
         <View style={styles.sectionHeader}>
   <Text style={styles.sectionTitle}>Budgets</Text>
@@ -112,7 +109,6 @@ const [data, setData] = React.useState([]);
 </View>
 
 
-        {/* Transactions Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Latest Transactions</Text>

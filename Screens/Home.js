@@ -32,9 +32,9 @@ const StackHHome = () => {
         <Stack.Screen name="Home" component={HomeScreen}options={{headerShown: false}}/>
      
         <Stack.Screen name="Budget" component={Budget} options={{
-    headerStyle: { backgroundColor: 'black' }, // Set header background to black
-    headerTintColor: 'white', // Set header text color to white
-    headerTitleStyle: { fontWeight: 'bold' }, // Optional: Make text bold
+    headerStyle: { backgroundColor: 'black' }, 
+    headerTintColor: 'white', 
+    headerTitleStyle: { fontWeight: 'bold' },
   }} />
       </Stack.Navigator>
     );
@@ -45,9 +45,9 @@ const StackReport = () => {
       <Stack.Screen name="Report" component={Report}options={{headerShown: false}}/>
    
       <Stack.Screen name="Ai" component={Ai} options={{
-  headerStyle: { backgroundColor: 'black' }, // Set header background to black
-  headerTintColor: 'white', // Set header text color to white
-  headerTitleStyle: { fontWeight: 'bold' }, // Optional: Make text bold
+  headerStyle: { backgroundColor: 'black' }, 
+  headerTintColor: 'white', 
+  headerTitleStyle: { fontWeight: 'bold' }, 
 }} />
     </Stack.Navigator>
   );
@@ -87,15 +87,15 @@ const StackReport = () => {
     options={{
       tabBarButton: () => (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          {/* This button will be centered */}
+          
           <TouchableOpacity 
             style={{
               backgroundColor: 'violet', 
               borderRadius: 50, 
               padding: 10,
               position: 'absolute', 
-              top: -20, // Adjust the vertical position
-              zIndex: 1, // Ensures the button is above other icons
+              top: -20, 
+              zIndex: 1, 
             }}
             onPress={() => {
               navigation.navigate('AddTransaction')

@@ -14,7 +14,6 @@ const AddWalletScreen = ({ route}) => {
       return;
     }
     
-    // Convert balance to number
     const balance = parseFloat(initialBalance);
     if (isNaN(balance) || balance < 0) {
       alert('Enter a valid balance');

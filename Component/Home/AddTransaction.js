@@ -26,7 +26,6 @@ const AddTransaction = ({navigation}) => {
   const data = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
-  // Date and Time state
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateString, setDateString] = useState(new Date().toLocaleDateString());

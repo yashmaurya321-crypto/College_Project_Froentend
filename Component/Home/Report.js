@@ -37,14 +37,12 @@ const Report = ({ navigation }) => {
     }, [])
   );
 
-  // Currency Formatter
   const formatCurrency = (amount) => 
     new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
 
-  // Loading State
   if (loading || !transactionData) {
     return (
       <View style={styles.loadingContainer}>
@@ -53,7 +51,6 @@ const Report = ({ navigation }) => {
     );
   }
 
-  // No Data State
   if (!transactionData || Object.keys(transactionData).length === 0 || !transactionData.balanceTrend?.length) {
     return (
       <View style={styles.noDataContainer}>
@@ -62,7 +59,6 @@ const Report = ({ navigation }) => {
     );
   }
 
-  // Balance Trend Line Chart Configuration
   const balanceTrendData = {
     labels: transactionData.balanceTrend.map(() => ""),
     datasets: [{
@@ -70,8 +66,6 @@ const Report = ({ navigation }) => {
       color: (opacity = 1) => `rgba(65, 105, 225, ${opacity})`,
     }]
   };
-
-  // Expense Pie Chart Configuration
   const pieChartData = transactionData.categorySummary.expenses.map(category => ({
     name: category.name,
     amount: category.totalAmount,
@@ -93,7 +87,6 @@ const Report = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Balance Trend Section */}
       <View style={styles.trendContainer}>
         <Text style={styles.sectionTitle}>Balance Trend</Text>
         
@@ -122,7 +115,6 @@ const Report = ({ navigation }) => {
         />
       </View>
 
-      {/* Expense Breakdown Section */}
       <View style={styles.trendContainer}>
         <Text style={styles.sectionTitle}>Expense Breakdown</Text>
         <PieChart
@@ -137,7 +129,6 @@ const Report = ({ navigation }) => {
         />
       </View>
 
-      {/* AI Assistance Button */}
       <View style={styles.aiButtonContainer}>
         <TouchableOpacity 
           style={styles.aiButton}

@@ -21,14 +21,13 @@ const Budget = ({ navigation }) => {
     total: '',
   });
 
-  // Function to add a new budget category
   const addBudget = () => {
     if (newBudget.category && newBudget.total) {
       const newBudgetItem = {
-        _id: Math.random().toString(36).substr(2, 9), // Generate a temporary ID
+        _id: Math.random().toString(36).substr(2, 9), 
         name: newBudget.category,
         limit: parseFloat(newBudget.total),
-        spent: 0, // Initially nothing is spent
+        spent: 0, 
       };
 
       setBudgets([...budgets, newBudgetItem]);
@@ -65,7 +64,6 @@ const Budget = ({ navigation }) => {
         ))}
       </ScrollView>
 
-      {/* Button to navigate to AddBudget screen */}
       <TouchableOpacity 
         style={styles.addButton}
         onPress={() => navigation.navigate('AddBudjet', { budjetId: data?.budjet?.[0]?._id })}
@@ -73,7 +71,6 @@ const Budget = ({ navigation }) => {
         <Text style={styles.addButtonText}>+ Add Budget</Text>
       </TouchableOpacity>
 
-      {/* Modal for Adding New Budget */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -123,7 +120,6 @@ const Budget = ({ navigation }) => {
   );
 };
 
-// Styles for the UI
 const styles = StyleSheet.create({
   container: {
     flex: 1,

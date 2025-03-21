@@ -25,7 +25,6 @@ import { merge } from 'lodash';
 
 const { width } = Dimensions.get('window');
 
-// Create a custom dark theme by merging React Navigation's DarkTheme with React Native Paper's DarkTheme
 const CustomDarkTheme = merge({}, NavigationDarkTheme, PaperDarkTheme, {
   colors: {
     primary: '#6200ee',
@@ -50,7 +49,7 @@ const Ai = () => {
   const [error, setError] = useState(null);
   const [financialData, setFinancialData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const theme = CustomDarkTheme; // Use custom dark theme
+  const theme = CustomDarkTheme; 
   const userId = user?.user?._id;
   console.log(userId);
   const fetchFinancialAnalysis = async () => {
@@ -76,12 +75,10 @@ const Ai = () => {
     }
   };
 
-  // Fetch data when component mounts
   useEffect(() => {
     fetchFinancialAnalysis();
   }, [userId]);
 
-  // Fetch data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchFinancialAnalysis();
@@ -94,33 +91,29 @@ const Ai = () => {
     setRefreshing(false);
   }, [userId]);
   const generatePredictionsData = () => {
-    // Generate 30 days of forecast data
     const today = new Date();
     const labels = [];
     const expensesData = [];
     const incomeData = [];
     
-    // Start with base values and add trends
     let baseExpense = financialData?.predictions?.[0]?.predictedExpenses || 2000;
     let baseIncome = financialData?.predictions?.[0]?.predictedIncome || 3000;
     
-    let expenseTrend = 1.005; // Slight upward trend for expenses
-    let incomeTrend = 1.003; // Slight upward trend for income
+    let expenseTrend = 1.005; 
+    let incomeTrend = 1.003; 
     
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
       
-      // Add weekly patterns (expenses higher on weekends, income steady)
+      
       const dayOfWeek = date.getDay();
       const weekendFactor = (dayOfWeek === 0 || dayOfWeek === 6) ? 1.1 : 1;
       
-      // Add some randomness for realistic predictions
-      const expenseRandom = 0.95 + (Math.random() * 0.1); // Between 0.95 and 1.05
-      const incomeRandom = 0.98 + (Math.random() * 0.04); // Between 0.98 and 1.02
+      const expenseRandom = 0.95 + (Math.random() * 0.1); 
+      const incomeRandom = 0.98 + (Math.random() * 0.04); 
       
-      // Calculate values
       baseExpense = baseExpense * expenseTrend * expenseRandom * weekendFactor;
       baseIncome = baseIncome * incomeTrend * incomeRandom;
       
@@ -146,10 +139,8 @@ const Ai = () => {
     };
   };
   
-  // Use the enhanced predictions data
   const enhancedPredictionsData = generatePredictionsData();
   
-  // Enhanced chart configuration
   const enhancedChartConfig = {
     ...chartConfig,
     propsForLabels: {
@@ -186,14 +177,11 @@ const Ai = () => {
     );
   }
 
-  // If data is not yet loaded
   if (!financialData) return null;
 
-  // Extract AI insights
   const { aiInsights } = financialData;
   const { aiPredictions, confidenceScore } = aiInsights;
   
-  // Prepare data for prediction chart
   const predictionsData = {
     labels: financialData.predictions.slice(0, 7).map(pred => {
       const date = new Date(pred.date);
@@ -214,7 +202,6 @@ const Ai = () => {
     legend: ["Expenses", "Income"]
   };
 
-  // Prepare category spending data
   const categoryData = {
     labels: financialData.historicalData.categoryAnalysis
       .filter(cat => cat.type === 'expense')
@@ -238,7 +225,6 @@ const Ai = () => {
     }
   };
 
-  // Chart configuration for dark theme
   const chartConfig = {
     backgroundColor: theme.colors.surface,
     backgroundGradientFrom: theme.colors.surface,
@@ -256,7 +242,6 @@ const Ai = () => {
     }
   };
 
-  // Custom Chip component to avoid the variant error
   const SeverityChip = ({ severity }) => (
     <View style={[styles.customChip, { backgroundColor: getSeverityColor(severity) }]}>
       <Text style={styles.chipText}>{severity.toUpperCase()}</Text>
@@ -288,7 +273,6 @@ const Ai = () => {
           </Text>
         </Banner>
 
-        {/* Predictions Chart */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>30-Day Financial Forecast</Title>
@@ -305,7 +289,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* Category Spending */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Top Spending Categories</Title>
@@ -325,7 +308,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* AI Insights */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Spending Patterns</Title>
@@ -343,7 +325,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* Budget Recommendations */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Budget Recommendations</Title>
@@ -361,7 +342,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* Savings Opportunities */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Savings Opportunities</Title>
@@ -381,7 +361,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* Income Growth */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Income Growth Strategies</Title>
@@ -401,7 +380,6 @@ const Ai = () => {
           </Card.Content>
         </Card>
 
-        {/* Risk Assessment */}
         <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
           <Card.Content>
             <Title style={{ color: theme.colors.text }}>Financial Risk Assessment</Title>
@@ -419,8 +397,6 @@ const Ai = () => {
             ))}
           </Card.Content>
         </Card>
-
-        {/* Overspending Alerts */}
         {financialData.insights.overspending.length > 0 && (
           <Card style={[styles.card, { backgroundColor: '#331111' }]}>
             <Card.Content>

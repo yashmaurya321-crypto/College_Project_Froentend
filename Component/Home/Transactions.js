@@ -46,10 +46,8 @@ const Transactions = ({ route }) => {
     const date = new Date(transaction.date);
     const year = date.getFullYear();
     
-    // Get the week number of the year
     const weekNumber = getWeekNumber(date);
 
-    // Create a key for grouping
     const key = `${year}-W${weekNumber}`;
 
     if (!grouped[key]) {
@@ -61,7 +59,6 @@ const Transactions = ({ route }) => {
 
   return grouped;
   };
-// Helper function to get the week number of the year
 const getWeekNumber = (date) => {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   const pastDays = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
